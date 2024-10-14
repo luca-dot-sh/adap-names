@@ -1,6 +1,6 @@
 import { Node } from "./Node";
 import { Directory } from "./Directory";
-import { MethodFailedException } from "../common/MethodFailedException";
+import { IllegalArgumentException } from "../common/IllegalArgumentException";
 
 enum FileState {
     OPEN,
@@ -13,11 +13,14 @@ export class File extends Node {
     protected state: FileState = FileState.CLOSED;
 
     constructor(baseName: string, parent: Directory) {
+        IllegalArgumentException.assertCondition(baseName!="","baseName must not be empty")
         super(baseName, parent);
     }
 
     public open(): void {
-        // do something
+        IllegalArgumentException.assertCondition(this.state!=FileState.OPEN, "do not open opened file")
+        IllegalArgumentException.assertCondition(this.state!=FileState.DELETED, "do not open deleted file")
+        this.state = FileState.OPEN
     }
 
     public read(noBytes: number): Int8Array {
@@ -26,7 +29,9 @@ export class File extends Node {
     }
 
     public close(): void {
-        // do something
+        IllegalArgumentException.assertCondition(this.state!=FileState.CLOSED, "do not close closed file")
+        IllegalArgumentException.assertCondition(this.state!=FileState.DELETED, "do not close deleted file")
+        this.state = FileState.CLOSED    
     }
 
     protected doGetFileState(): FileState {
