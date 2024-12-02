@@ -14,6 +14,9 @@ import { RootNode } from "../../../src/adap-b05/files/RootNode";
 import { InvalidStateException } from "../../../src/adap-b05/common/InvalidStateException";
 import { ServiceFailureException } from "../../../src/adap-b05/common/ServiceFailureException";
 import { Exception } from "../../../src/adap-b05/common/Exception";
+import { F } from "vitest/dist/chunks/config.CHuotKvS";
+import { assert } from "console";
+import { Dir } from "fs";
 
 
 function createFileSystem(): RootNode {
@@ -77,5 +80,19 @@ describe("Buggy setup test", () => {
       expect(tx instanceof InvalidStateException).toBe(true);
     }
     expect(threwException).toBe(true);
+  });
+  it("selfmade", () => {
+    let rn: RootNode = new RootNode();
+    let usr: Directory = new Directory("usr", rn);
+    let bin: Directory = new Directory("bin", usr);
+    let bin2: File = new File("bin", bin);
+    let found = rn.findNodes("bin")
+    expect(found.size).toBe(2)
+    expect(found.has(bin)).toBe(true)
+    expect(found.has(bin2)).toBe(true)
+    let mnt: Directory = new Directory("mnt",rn)
+    found = rn.findNodes("mnt")
+    expect(found.size).toBe(1)
+    expect(found.has(mnt)).toBe(true)
   });
 });
