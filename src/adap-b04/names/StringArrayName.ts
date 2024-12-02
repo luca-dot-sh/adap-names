@@ -2,7 +2,7 @@ import { DEFAULT_DELIMITER, ESCAPE_CHARACTER } from "../common/Printable";
 import { Name } from "./Name";
 import { AbstractName } from "./AbstractName";
 import { IllegalArgumentException } from "../../adap-b04/common/IllegalArgumentException";
-import { MethodFailureException } from "../../adap-b04/common/MethodFailureException";
+import { MethodFailedException } from "../../adap-b04/common/MethodFailedException";
 import { InvalidStateException } from "../common/InvalidStateException";
 
 function assertNoUnespacedDelimiters(c: string, delimiter: string): void {
@@ -89,7 +89,7 @@ export class StringArrayName extends AbstractName {
         this.components.splice(i, 1)
         if (this.components.length == 0) {
             this.components = old_components
-            throw new MethodFailureException("Name must always contain at least on component")
+            throw new MethodFailedException("Name must always contain at least on component")
         }
         this.assertAtLeastOneComponent()
     }

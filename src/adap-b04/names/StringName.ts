@@ -2,7 +2,7 @@ import { DEFAULT_DELIMITER, ESCAPE_CHARACTER } from "../common/Printable";
 import { Name } from "./Name";
 import { AbstractName } from "./AbstractName";
 import { IllegalArgumentException } from "../common/IllegalArgumentException";
-import { MethodFailureException } from "../common/MethodFailureException";
+import { MethodFailedException } from "../common/MethodFailedException";
 
 function assertTrue(condition: boolean, message: string = ""): void {
     if (!condition) throw Error(message)
@@ -88,7 +88,7 @@ export class StringName extends AbstractName {
         if(components.length!=0){
             this.name = components.join(this.delimiter)
         } else {
-            MethodFailureException.assertCondition(components.length!=0,"the number of components must never be 0")
+            MethodFailedException.assertCondition(components.length!=0,"the number of components must never be 0")
         }
     }
 
