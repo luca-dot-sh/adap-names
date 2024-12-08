@@ -19,7 +19,7 @@ function assertNoUnespacedDelimiters(c: string, delimiter: string): void {
 //TODO asserts!!!
 export class StringArrayName extends AbstractName {
 
-    private getCopiedComponents(): string[]{
+    private getCopiedComponents(): string[] {
         return [...this.components]
     }
 
@@ -58,55 +58,64 @@ export class StringArrayName extends AbstractName {
     }
 
     public setComponent(i: number, c: string): Name {
-        assertNoUnespacedDelimiters(c, this.delimiter)
-        this.assertValidComponentIndexForSet(i)
-        let res: Name
-        if (i == this.components.length) {
-            res = this.append(c)
-        } else {
-            let components = this.getCopiedComponents()
-            components[i] = c
-            res = new StringArrayName(components,this.delimiter)
-        }
-        this.assertAtLeastOneComponent()
-        return res
+        return this.runWithMutationProtection(() => {
+
+            assertNoUnespacedDelimiters(c, this.delimiter)
+            this.assertValidComponentIndexForSet(i)
+            let res: Name
+            if (i == this.components.length) {
+                res = this.append(c)
+            } else {
+                let components = this.getCopiedComponents()
+                components[i] = c
+                res = new StringArrayName(components, this.delimiter)
+            }
+            this.assertAtLeastOneComponent()
+            return res
+        })
     }
 
     public insert(i: number, c: string): Name {
-        assertNoUnespacedDelimiters(c, this.delimiter)
-        this.assertValidComponentIndexForSet(i)
-        let res: Name
-        if (i == this.components.length) {
-            res = this.append(c)
-        } else {
-            let components = this.getCopiedComponents()
-            components.splice(i, 0, c)
-            res = new StringArrayName(components,this.delimiter)
-        }
-        this.assertAtLeastOneComponent()
-        return res
+        return this.runWithMutationProtection(() => {
+            assertNoUnespacedDelimiters(c, this.delimiter)
+            this.assertValidComponentIndexForSet(i)
+            let res: Name
+            if (i == this.components.length) {
+                res = this.append(c)
+            } else {
+                let components = this.getCopiedComponents()
+                components.splice(i, 0, c)
+                res = new StringArrayName(components, this.delimiter)
+            }
+            this.assertAtLeastOneComponent()
+            return res
+        })
     }
 
     public append(c: string): Name {
-        assertNoUnespacedDelimiters(c, this.delimiter)
-        let components = this.getCopiedComponents()
-        components.push(c)
-        this.assertAtLeastOneComponent()
-        return new StringArrayName(components, this.delimiter)
+        return this.runWithMutationProtection(() => {
+            assertNoUnespacedDelimiters(c, this.delimiter)
+            let components = this.getCopiedComponents()
+            components.push(c)
+            this.assertAtLeastOneComponent()
+            return new StringArrayName(components, this.delimiter)
+        })
     }
 
     public remove(i: number): Name {
-        let components = this.getCopiedComponents()
-        this.assertValidComponentIndexForGet(i)
-        let deletedElements = components.splice(i, 1)
-        if(deletedElements.length!=1) {
-            throw new MethodFailedException("no element was deleted")
-        }
-        if (this.components.length == 0) {
-            throw new MethodFailedException("Name must always contain at least on component")
-        }
-        this.assertAtLeastOneComponent()
-        return new StringArrayName(components,this.delimiter)
+        return this.runWithMutationProtection(() => {
+            let components = this.getCopiedComponents()
+            this.assertValidComponentIndexForGet(i)
+            let deletedElements = components.splice(i, 1)
+            if (deletedElements.length != 1) {
+                throw new MethodFailedException("no element was deleted")
+            }
+            if (this.components.length == 0) {
+                throw new MethodFailedException("Name must always contain at least on component")
+            }
+            this.assertAtLeastOneComponent()
+            return new StringArrayName(components, this.delimiter)
+        })
     }
 
 }

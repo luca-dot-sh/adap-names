@@ -1,5 +1,6 @@
 import { DEFAULT_DELIMITER, ESCAPE_CHARACTER } from "../common/Printable";
 import { Name } from "./Name";
+import { InvalidStateException } from "../common/InvalidStateException";
 
 export abstract class AbstractName implements Name {
 
@@ -71,7 +72,13 @@ export abstract class AbstractName implements Name {
             res = res.append(other.getComponent(i))
         }
         return res
+    }
 
+    protected runWithMutationProtection(operation:()=>Name): Name {
+        let prevHashCode = this.getHashCode()
+        let newName:Name = operation()
+        InvalidStateException.assert(prevHashCode==newName.getHashCode(),"State of name changed!")
+        return newName;
     }
 
 
