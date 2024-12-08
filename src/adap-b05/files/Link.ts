@@ -7,6 +7,7 @@ export class Link extends Node {
 
     constructor(bn: string, pn: Directory, tn?: Node) {
         super(bn, pn);
+        this.assertIsValidBaseNameAsPrecond(bn)
 
         if (tn != undefined) {
             this.targetNode = tn;

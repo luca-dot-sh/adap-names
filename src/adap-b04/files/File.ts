@@ -13,13 +13,13 @@ export class File extends Node {
     protected state: FileState = FileState.CLOSED;
 
     constructor(baseName: string, parent: Directory) {
-        IllegalArgumentException.assertCondition(baseName!="","baseName must not be empty")
+        IllegalArgumentException.assert(baseName!="","baseName must not be empty")
         super(baseName, parent);
     }
 
     public open(): void {
-        IllegalArgumentException.assertCondition(this.state!=FileState.OPEN, "do not open opened file")
-        IllegalArgumentException.assertCondition(this.state!=FileState.DELETED, "do not open deleted file")
+        IllegalArgumentException.assert(this.state!=FileState.OPEN, "do not open opened file")
+        IllegalArgumentException.assert(this.state!=FileState.DELETED, "do not open deleted file")
         this.state = FileState.OPEN
     }
 
@@ -29,8 +29,8 @@ export class File extends Node {
     }
 
     public close(): void {
-        IllegalArgumentException.assertCondition(this.state!=FileState.CLOSED, "do not close closed file")
-        IllegalArgumentException.assertCondition(this.state!=FileState.DELETED, "do not close deleted file")
+        IllegalArgumentException.assert(this.state!=FileState.CLOSED, "do not close closed file")
+        IllegalArgumentException.assert(this.state!=FileState.DELETED, "do not close deleted file")
         this.state = FileState.CLOSED    
     }
 

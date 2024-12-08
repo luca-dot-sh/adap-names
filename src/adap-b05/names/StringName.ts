@@ -3,8 +3,6 @@ import { Name } from "./Name";
 import { AbstractName } from "./AbstractName";
 import { IllegalArgumentException } from "../common/IllegalArgumentException";
 import { MethodFailedException } from "../common/MethodFailedException";
-import { AssertionDispatcher } from "../common/AssertionDispatcher";
-import { ExceptionType } from "../common/AssertionDispatcher";
 
 function assertTrue(condition: boolean, message: string = ""): void {
     if (!condition) throw Error(message)
@@ -15,14 +13,14 @@ function isTrailingCharacterEscape(c: string) {
 }
 
 function assertInBounds(i: number, bound:number): void {
-    AssertionDispatcher.dispatch(ExceptionType.PRECONDITION, i < bound, "out of bounds")
+    IllegalArgumentException.assert(i < bound, "out of bounds")
 }
 
 function assertNoUnespacedDelimiters(c: string, delimiter: string): void {
     let str_components = c.split(delimiter)
     for (let i = 0; i < str_components.length; i++) {
 
-        IllegalArgumentException.assertCondition(!(i > 0
+        IllegalArgumentException.assert(!(i > 0
             && str_components[i - 1].length > 0
             && str_components[i - 1].charAt(str_components[i - 1].length - 1) != ESCAPE_CHARACTER), "String not masked propertly: " + c)
     }
@@ -84,13 +82,13 @@ export class StringName extends AbstractName {
 
     public remove(n: number): void {
         let components = this.getComponents()
-        AssertionDispatcher.dispatch(ExceptionType.PRECONDITION,!(n == 0 && components.length == 1),"never remove the last component")
+        IllegalArgumentException.assert(!(n == 0 && components.length == 1),"never remove the last component")
         assertInBounds(n,components.length)
         components.splice(n, 1)
         if(components.length!=0){
             this.name = components.join(this.delimiter)
         } else {
-            AssertionDispatcher.dispatch(ExceptionType.POSTCONDITION, components.length!=0,"the number of components must never be 0")
+            MethodFailedException.assert(components.length!=0,"the number of components must never be 0")
         }
     }
 

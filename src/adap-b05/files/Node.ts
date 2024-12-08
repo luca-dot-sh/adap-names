@@ -1,7 +1,6 @@
 import { IllegalArgumentException } from "../common/IllegalArgumentException";
 import { InvalidStateException } from "../common/InvalidStateException";
 import { ServiceFailureException } from "../common/ServiceFailureException";
-import { ExceptionType, AssertionDispatcher } from "../common/AssertionDispatcher";
 
 
 import { Name } from "../names/Name";
@@ -14,7 +13,6 @@ export class Node {
     protected parentNode: Directory;
 
     constructor(bn: string, pn: Directory) {
-        this.assertIsValidBaseName(bn, ExceptionType.PRECONDITION)
         this.doSetBaseName(bn);
         this.parentNode = pn; // why oh why do I have to set this
         this.initialize(pn);
@@ -46,7 +44,7 @@ export class Node {
     }
 
     public rename(bn: string): void {
-        this.assertIsValidBaseName(bn, ExceptionType.PRECONDITION)
+        this.assertIsValidBaseNameAsPrecond(bn)
         this.doSetBaseName(bn);
         this.assertClassInvariants()
     }
@@ -82,12 +80,17 @@ export class Node {
 
     protected assertClassInvariants(): void {
         const bn: string = this.doGetBaseName();
-        this.assertIsValidBaseName(bn, ExceptionType.CLASS_INVARIANT);
+        this.assertIsValidBaseNameAsClassInv(bn);
     }
 
-    protected assertIsValidBaseName(bn: string, et: ExceptionType): void {
+    protected assertIsValidBaseNameAsPrecond(bn: string): void {
         const condition: boolean = (bn != "");
-        AssertionDispatcher.dispatch(et, condition, "invalid base name");
+        IllegalArgumentException.assert(condition, "invalid base name");
+    }
+
+    protected assertIsValidBaseNameAsClassInv(bn: string): void {
+        const condition: boolean = (bn != "");
+        InvalidStateException.assert(condition, "invalid base name");
     }
 
 }

@@ -1,16 +1,15 @@
 import { DEFAULT_DELIMITER, ESCAPE_CHARACTER } from "../common/Printable";
 import { Name } from "./Name";
 import { AbstractName } from "./AbstractName";
-import { IllegalArgumentException } from "../../adap-b04/common/IllegalArgumentException";
-import { MethodFailedException } from "../../adap-b04/common/MethodFailedException";
+import { IllegalArgumentException } from "../../adap-b05/common/IllegalArgumentException";
+import { MethodFailedException } from "../../adap-b05/common/MethodFailedException";
 import { InvalidStateException } from "../common/InvalidStateException";
-import { AssertionDispatcher, ExceptionType } from "../common/AssertionDispatcher";
 
 function assertNoUnespacedDelimiters(c: string, delimiter: string): void {
     let str_components = c.split(delimiter)
     for (let i = 0; i < str_components.length; i++) {
 
-        AssertionDispatcher.dispatch(ExceptionType.PRECONDITION,!(i > 0
+        IllegalArgumentException.assert(!(i > 0
             && str_components[i - 1].length > 0
             && str_components[i - 1].charAt(str_components[i - 1].length - 1) != ESCAPE_CHARACTER), "String not masked propertly: " + c)
     }
@@ -21,20 +20,20 @@ export class StringArrayName extends AbstractName {
     protected components: string[] = [];
 
     private assertValidComponentIndexForGet(i: number): void {
-        AssertionDispatcher.dispatch(ExceptionType.PRECONDITION, i < this.components.length, "out of bounds")
+        IllegalArgumentException.assert(i < this.components.length, "out of bounds")
     }
 
     private assertValidComponentIndexForSet(i: number): void {
-        AssertionDispatcher.dispatch(ExceptionType.PRECONDITION, i <= this.components.length, "out of bounds")
+        IllegalArgumentException.assert(i <= this.components.length, "out of bounds")
     }
 
     private assertAtLeastOneComponent(){
-        AssertionDispatcher.dispatch(ExceptionType.CLASS_INVARIANT,this.components.length>0,"there must always be at least one component")
+        InvalidStateException.assert(this.components.length>0,"there must always be at least one component")
     }
 
     constructor(other: string[], delimiter?: string) {
         super(delimiter);
-        AssertionDispatcher.dispatch(ExceptionType.PRECONDITION, other.length != 0, "Input array empty")
+        IllegalArgumentException.assert(other.length != 0, "Input array empty")
         other.forEach((component) => assertNoUnespacedDelimiters(component, this.delimiter))
         this.components = other
     }

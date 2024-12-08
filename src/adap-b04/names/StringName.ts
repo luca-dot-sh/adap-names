@@ -13,14 +13,14 @@ function isTrailingCharacterEscape(c: string) {
 }
 
 function assertInBounds(i: number, bound:number): void {
-    IllegalArgumentException.assertCondition(i < bound, "out of bounds")
+    IllegalArgumentException.assert(i < bound, "out of bounds")
 }
 
 function assertNoUnespacedDelimiters(c: string, delimiter: string): void {
     let str_components = c.split(delimiter)
     for (let i = 0; i < str_components.length; i++) {
 
-        IllegalArgumentException.assertCondition(!(i > 0
+        IllegalArgumentException.assert(!(i > 0
             && str_components[i - 1].length > 0
             && str_components[i - 1].charAt(str_components[i - 1].length - 1) != ESCAPE_CHARACTER), "String not masked propertly: " + c)
     }
@@ -88,7 +88,7 @@ export class StringName extends AbstractName {
         if(components.length!=0){
             this.name = components.join(this.delimiter)
         } else {
-            MethodFailedException.assertCondition(components.length!=0,"the number of components must never be 0")
+            MethodFailedException.assert(components.length!=0,"the number of components must never be 0")
         }
     }
 

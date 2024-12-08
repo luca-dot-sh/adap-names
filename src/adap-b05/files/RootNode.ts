@@ -1,6 +1,7 @@
 import { Name } from "../names/Name";
 import { StringName } from "../names/StringName";
 import { Directory } from "./Directory";
+import { Node } from "./Node";
 
 export class RootNode extends Directory {
 
@@ -28,6 +29,10 @@ export class RootNode extends Directory {
 
     protected doSetBaseName(bn: string): void {
         // null operation
+    }
+
+    public assertIsValidBaseNameAsClassInv(bn: string): void {
+        // NO VALID FOR ROOT NODE
     }
 
 }

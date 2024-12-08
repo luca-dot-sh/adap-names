@@ -9,7 +9,7 @@ function assertNoUnespacedDelimiters(c: string, delimiter: string): void {
     let str_components = c.split(delimiter)
     for (let i = 0; i < str_components.length; i++) {
 
-        IllegalArgumentException.assertCondition(!(i > 0
+        IllegalArgumentException.assert(!(i > 0
             && str_components[i - 1].length > 0
             && str_components[i - 1].charAt(str_components[i - 1].length - 1) != ESCAPE_CHARACTER), "String not masked propertly: " + c)
     }
@@ -20,20 +20,20 @@ export class StringArrayName extends AbstractName {
     protected components: string[] = [];
 
     private assertValidComponentIndexForGet(i: number): void {
-        IllegalArgumentException.assertCondition(i < this.components.length, "out of bounds")
+        IllegalArgumentException.assert(i < this.components.length, "out of bounds")
     }
 
     private assertValidComponentIndexForSet(i: number): void {
-        IllegalArgumentException.assertCondition(i <= this.components.length, "out of bounds")
+        IllegalArgumentException.assert(i <= this.components.length, "out of bounds")
     }
 
     private assertAtLeastOneComponent(){
-        InvalidStateException.assertCondition(this.components.length>0,"there must always be at least one component")
+        InvalidStateException.assert(this.components.length>0,"there must always be at least one component")
     }
 
     constructor(other: string[], delimiter?: string) {
         super(delimiter);
-        IllegalArgumentException.assertCondition(other.length != 0, "Input array empty")
+        IllegalArgumentException.assert(other.length != 0, "Input array empty")
         other.forEach((component) => assertNoUnespacedDelimiters(component, this.delimiter))
         this.components = other
     }
