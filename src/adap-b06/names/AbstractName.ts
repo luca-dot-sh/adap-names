@@ -67,17 +67,19 @@ export abstract class AbstractName implements Name {
     abstract remove(i: number): Name;
 
     public concat(other: Name): Name {
-        let res: Name = this
-        for (let i = 0; i < other.getNoComponents(); i++) {
-            res = res.append(other.getComponent(i))
-        }
-        return res
+        return this.runWithMutationProtection(() => {
+            let res: Name = this
+            for (let i = 0; i < other.getNoComponents(); i++) {
+                res = res.append(other.getComponent(i))
+            }
+            return res
+        })
     }
 
-    protected runWithMutationProtection(operation:()=>Name): Name {
+    protected runWithMutationProtection(operation: () => Name): Name {
         let prevHashCode = this.getHashCode()
-        let newName:Name = operation()
-        InvalidStateException.assert(prevHashCode==newName.getHashCode(),"State of name changed!")
+        let newName: Name = operation()
+        InvalidStateException.assert(prevHashCode == this.getHashCode(), "State of name changed!")
         return newName;
     }
 

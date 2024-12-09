@@ -63,7 +63,6 @@ export class StringName extends AbstractName {
 
     public insert(n: number, c: string): Name {
         return this.runWithMutationProtection(() => {
-
             assertNoUnespacedDelimiters(c, this.delimiter)
             let components = this.getComponents()
             assertInBounds(n, components.length + 1)

@@ -16,26 +16,9 @@ function assertNoUnespacedDelimiters(c: string, delimiter: string): void {
     }
 }
 
-//TODO asserts!!!
 export class StringArrayName extends AbstractName {
 
-    private getCopiedComponents(): string[] {
-        return [...this.components]
-    }
-
     protected components: string[] = [];
-
-    private assertValidComponentIndexForGet(i: number): void {
-        IllegalArgumentException.assert(i < this.components.length, "out of bounds")
-    }
-
-    private assertValidComponentIndexForSet(i: number): void {
-        IllegalArgumentException.assert(i <= this.components.length, "out of bounds")
-    }
-
-    private assertAtLeastOneComponent() {
-        InvalidStateException.assert(this.components.length > 0, "there must always be at least one component")
-    }
 
     constructor(other: string[], delimiter?: string) {
         super(delimiter);
@@ -45,21 +28,24 @@ export class StringArrayName extends AbstractName {
     }
 
     public isEmpty(): boolean {
+        this.assertClassInvariants()
         return this.components[0] == ""
     }
 
     public getNoComponents(): number {
+        this.assertClassInvariants()
         return this.components.length
     }
 
     public getComponent(i: number): string {
+        this.assertClassInvariants()
         this.assertValidComponentIndexForGet(i)
         return this.components[i]
     }
 
     public setComponent(i: number, c: string): Name {
         return this.runWithMutationProtection(() => {
-
+            this.assertClassInvariants()
             assertNoUnespacedDelimiters(c, this.delimiter)
             this.assertValidComponentIndexForSet(i)
             let res: Name
@@ -70,13 +56,14 @@ export class StringArrayName extends AbstractName {
                 components[i] = c
                 res = new StringArrayName(components, this.delimiter)
             }
-            this.assertAtLeastOneComponent()
+            this.assertNameHasAtLeastOneComponent(res)
             return res
         })
     }
 
     public insert(i: number, c: string): Name {
         return this.runWithMutationProtection(() => {
+            this.assertClassInvariants()
             assertNoUnespacedDelimiters(c, this.delimiter)
             this.assertValidComponentIndexForSet(i)
             let res: Name
@@ -87,23 +74,26 @@ export class StringArrayName extends AbstractName {
                 components.splice(i, 0, c)
                 res = new StringArrayName(components, this.delimiter)
             }
-            this.assertAtLeastOneComponent()
+            this.assertNameHasAtLeastOneComponent(res)
             return res
         })
     }
 
     public append(c: string): Name {
         return this.runWithMutationProtection(() => {
+            this.assertClassInvariants()
             assertNoUnespacedDelimiters(c, this.delimiter)
             let components = this.getCopiedComponents()
             components.push(c)
-            this.assertAtLeastOneComponent()
-            return new StringArrayName(components, this.delimiter)
+            let res =new StringArrayName(components, this.delimiter)
+            this.assertNameHasAtLeastOneComponent(res)
+            return  res
         })
     }
 
     public remove(i: number): Name {
         return this.runWithMutationProtection(() => {
+            this.assertClassInvariants()
             let components = this.getCopiedComponents()
             this.assertValidComponentIndexForGet(i)
             let deletedElements = components.splice(i, 1)
@@ -113,9 +103,36 @@ export class StringArrayName extends AbstractName {
             if (this.components.length == 0) {
                 throw new MethodFailedException("Name must always contain at least on component")
             }
-            this.assertAtLeastOneComponent()
-            return new StringArrayName(components, this.delimiter)
+            let res = new StringArrayName(components, this.delimiter)
+            this.assertNameHasAtLeastOneComponent(res)
+            return res
         })
+    }
+
+    private assertValidComponentIndexForGet(i: number): void {
+        IllegalArgumentException.assert(i < this.components.length, "out of bounds")
+    }
+
+    private assertValidComponentIndexForSet(i: number): void {
+        IllegalArgumentException.assert(i <= this.components.length, "out of bounds")
+    }
+
+    private assertClassInvariants(){
+        this.assertAtLeastOneComponent()
+    }
+
+    /** If we don't work on the components array (like in assertNameHasAtLeastOneComponent) here, we will get a Stack Overflow error*/
+    private assertAtLeastOneComponent(){
+        InvalidStateException.assert(this.components.length > 0, "there must always be at least one component")
+    } 
+
+
+    private assertNameHasAtLeastOneComponent(name:Name) {
+        InvalidStateException.assert(this.getNoComponents() > 0, "there must always be at least one component")
+    }
+
+    private getCopiedComponents(): string[] {
+        return [...this.components]
     }
 
 }
